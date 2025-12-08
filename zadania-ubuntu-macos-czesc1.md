@@ -2588,6 +2588,54 @@ Wyobraź sobie, że jesteś administratorem systemu. Nowy pracownik (lub program
 
 ---
 
+#### Zadanie B2.6 – Zaawansowana struktura katalogów i uprawnienia (bez `sudo`)
+
+**Tytuł:** Zaprojektuj złożoną strukturę katalogów i ustaw poprawne uprawnienia (tylko w swoim katalogu domowym)
+
+**Cel:** Uczeń ma zaplanować i utworzyć rozbudowaną strukturę katalogów w swoim katalogu domowym oraz samodzielnie dobrać i ustawić uprawnienia do plików i katalogów z wykorzystaniem `chmod` (zarówno w zapisie symbolicznym, jak i numerycznym), _bez_ używania `sudo`.
+
+**Poziom trudności:** Zaawansowany
+
+**Treść zadania:**
+
+> Uwaga: Pracuj wyłącznie w swoim katalogu domowym. Nie używaj `sudo` i nie modyfikuj katalogów systemowych (`/System`, `/usr`, `/Applications`, itp.).
+
+1. Upewnij się, że istnieje katalog projektu z poprzednich zadań:
+   ```
+   cd ~/Desktop
+   ls
+```
+Jeżeli nie ma katalogu projekt_mac, utwórz go:
+```bash
+mkdir projekt_mac
+cd projekt_mac
+```
+
+W katalogu projekt_mac utwórz rozbudowaną strukturę katalogów, która będzie odzwierciedlała różne „strefy dostępu”:
+```bash
+mkdir -p prywatne/finanse prywatne/notatki
+mkdir -p publiczne/raporty
+mkdir -p tylko_do_odczytu
+mkdir -p skrypty
+mkdir -p logi
+```
+Utwórz przykładowe pliki w odpowiednich katalogach:
+```
+echo "Budżet domowy – dane wrażliwe" > prywatne/finanse/budzet.txt
+echo "Mój dziennik – notatki prywatne" > prywatne/notatki/dziennik.txt
+
+echo "Raport 1 – dane do udostępnienia" > publiczne/raporty/raport1.txt
+echo "Raport 2 – dane do udostępnienia" > publiczne/raporty/raport2.txt
+
+echo "Regulamin projektu – nie zmieniaj" > tylko_do_odczytu/regulamin.txt
+
+echo "#!/bin/bash" > skrypty/backup.sh
+echo "echo 'Tworzę backup projektu...'" >> skrypty/backup.sh
+
+echo "Log aplikacji – tylko dla właściciela" > logi/app.log
+```
+
+
 ### DZIAŁ B3: Procesy, narzędzia (Homebrew, SSH)
 
 #### Zadanie B3.1 – Przeglądanie i zarządzanie procesami

@@ -2634,6 +2634,24 @@ echo "echo 'Tworzę backup projektu...'" >> skrypty/backup.sh
 
 echo "Log aplikacji – tylko dla właściciela" > logi/app.log
 ```
+Ustaw uprawnienia dla katalogu prywatne (wszystko tylko dla właściciela – brak dostępu dla grupy i innych):
+
+Wersja numeryczna:
+`chmod -R 700 prywatne`
+
+Wersja symboliczna (alternatywa – wykonaj i porównaj efekt):
+`chmod -R u=rwx,g=---,o=--- prywatne`
+
+Ustaw uprawnienia dla katalogu publiczne (typowe „publiczne” dane – każdy może czytać, właściciel może dodatkowo zapisywać):
+
+Wersja symboliczna (alternatywa – wykonaj i porównaj efekt):
+
+`chmod -R u=rwx,g=rx,o=rx publiczne`
+
+Sprawdz wyniki 
+
+`ls -la publiczne/raporty`
+
 
 
 ### DZIAŁ B3: Procesy, narzędzia (Homebrew, SSH)

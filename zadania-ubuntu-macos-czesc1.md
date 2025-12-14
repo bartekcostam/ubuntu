@@ -2598,59 +2598,196 @@ Wyobraź sobie, że jesteś administratorem systemu. Nowy pracownik (lub program
 
 **Treść zadania:**
 
-> Uwaga: Pracuj wyłącznie w swoim katalogu domowym. Nie używaj `sudo` i nie modyfikuj katalogów systemowych (`/System`, `/usr`, `/Applications`, itp.).
+> Uwaga: Pracuj wyłącznie w swoim katalogu domowym. Nie używaj `sudo` i nie modyfikuj katalogów systemowych (`/System`, `/usr`, `/Applications`, itp.).  
+> Uwaga (ważne): Dla **katalogów** bit `x` oznacza „możesz wejść/przejść (traverse)”, a `w` pozwala tworzyć/usuwać/zmieniać nazwy elementów w katalogu (zależnie też od `x`). Dla **plików** `x` oznacza uruchamianie pliku jako programu/skryptu.
 
 1. Upewnij się, że istnieje katalog projektu z poprzednich zadań:
    ```
    cd ~/Desktop
    ls
-```
-Jeżeli nie ma katalogu projekt_mac, utwórz go:
-```bash
-mkdir projekt_mac
-cd projekt_mac
-```
+   ```
+   Jeżeli nie ma katalogu `projekt_mac`, utwórz go:
+   ```bash
+   mkdir projekt_mac
+   cd projekt_mac
+   ```
 
-W katalogu projekt_mac utwórz rozbudowaną strukturę katalogów, która będzie odzwierciedlała różne „strefy dostępu”:
-```bash
-mkdir -p prywatne/finanse prywatne/notatki
-mkdir -p publiczne/raporty
-mkdir -p tylko_do_odczytu
-mkdir -p skrypty
-mkdir -p logi
-```
-Utwórz przykładowe pliki w odpowiednich katalogach:
-```
-echo "Budżet domowy – dane wrażliwe" > prywatne/finanse/budzet.txt
-echo "Mój dziennik – notatki prywatne" > prywatne/notatki/dziennik.txt
+2. W katalogu `projekt_mac` utwórz rozbudowaną strukturę katalogów, która będzie odzwierciedlała różne „strefy dostępu”:
+   ```bash
+   mkdir -p prywatne/finanse prywatne/notatki
+   mkdir -p publiczne/raporty
+   mkdir -p tylko_do_odczytu
+   mkdir -p skrypty
+   mkdir -p logi
+   ```
 
-echo "Raport 1 – dane do udostępnienia" > publiczne/raporty/raport1.txt
-echo "Raport 2 – dane do udostępnienia" > publiczne/raporty/raport2.txt
+3. Utwórz przykładowe pliki w odpowiednich katalogach:
+   ```bash
+   echo "Budżet domowy – dane wrażliwe" > prywatne/finanse/budzet.txt
+   echo "Mój dziennik – notatki prywatne" > prywatne/notatki/dziennik.txt
 
-echo "Regulamin projektu – nie zmieniaj" > tylko_do_odczytu/regulamin.txt
+   echo "Raport 1 – dane do udostępnienia" > publiczne/raporty/raport1.txt
+   echo "Raport 2 – dane do udostępnienia" > publiczne/raporty/raport2.txt
 
-echo "#!/bin/bash" > skrypty/backup.sh
-echo "echo 'Tworzę backup projektu...'" >> skrypty/backup.sh
+   echo "Regulamin projektu – nie zmieniaj" > tylko_do_odczytu/regulamin.txt
 
-echo "Log aplikacji – tylko dla właściciela" > logi/app.log
-```
-Ustaw uprawnienia dla katalogu prywatne (wszystko tylko dla właściciela – brak dostępu dla grupy i innych):
+   echo "#!/bin/bash" > skrypty/backup.sh
+   echo "echo 'Tworzę backup projektu...'" >> skrypty/backup.sh
 
-Wersja numeryczna:
-`chmod -R 700 prywatne`
+   echo "Log aplikacji – tylko dla właściciela" > logi/app.log
+   ```
 
-Wersja symboliczna (alternatywa – wykonaj i porównaj efekt):
-`chmod -R u=rwx,g=---,o=--- prywatne`
+4. Sprawdź stan początkowy (zapisz wynik do raportu – przyda się do porównania):
+   ```bash
+   ls -la
+   ls -la prywatne/finanse prywatne/notatki publiczne/raporty tylko_do_odczytu skrypty logi
+   ```
 
-Ustaw uprawnienia dla katalogu publiczne (typowe „publiczne” dane – każdy może czytać, właściciel może dodatkowo zapisywać):
+5. Ustaw uprawnienia dla katalogu `prywatne` – **tylko dla właściciela**.
 
-Wersja symboliczna (alternatywa – wykonaj i porównaj efekt):
+   **Wersja szybka (mniej precyzyjna, ale prosta):**
+   ```bash
+   chmod -R 700 prywatne
+   ```
 
-`chmod -R u=rwx,g=rx,o=rx publiczne`
+   **Wersja poprawna (zalecana – inne prawa dla katalogów i plików):**
+   ```bash
+   find prywatne -type d -exec chmod 700 {} \;
+   find prywatne -type f -exec chmod 600 {} \;
+   ```
 
-Sprawdz wyniki 
+   **Alternatywa symboliczna (zalecana – katalogi dostaną `x`, pliki nie):**
+   ```bash
+   chmod -R u=rwX,go= prywatne
+   ```
 
-`ls -la publiczne/raporty`
+   **Sprawdź wyniki:**
+   ```bash
+   ls -la prywatne prywatne/finanse prywatne/notatki
+   ls -la prywatne/finanse/budzet.txt prywatne/notatki/dziennik.txt
+   stat -f "%Sp %N" prywatne/finanse/budzet.txt prywatne/notatki/dziennik.txt
+   ```
+
+6. Ustaw uprawnienia dla katalogu `publiczne` – **każdy może czytać**, właściciel może zapisywać.
+
+   **Wersja poprawna (zalecana – katalogi 755, pliki 644):**
+   ```bash
+   find publiczne -type d -exec chmod 755 {} \;
+   find publiczne -type f -exec chmod 644 {} \;
+   ```
+
+   **Alternatywa symboliczna (prosta):**
+   ```bash
+   chmod -R u=rwX,go=rX publiczne
+   ```
+
+   **Sprawdź wyniki:**
+   ```bash
+   ls -la publiczne/raporty
+   stat -f "%Sp %N" publiczne/raporty/raport1.txt publiczne/raporty/raport2.txt
+   ```
+
+7. Ustaw uprawnienia dla `tylko_do_odczytu` – **katalog i plik tylko do odczytu** (zablokuj tworzenie nowych plików w tym katalogu).
+
+   **Ustaw docelowe uprawnienia:**
+   ```bash
+   chmod 555 tylko_do_odczytu
+   chmod 444 tylko_do_odczytu/regulamin.txt
+   ```
+
+   **Sprawdź:**
+   ```bash
+   ls -la tylko_do_odczytu
+   stat -f "%Sp %N" tylko_do_odczytu tylko_do_odczytu/regulamin.txt
+   ```
+
+   **Test (zrób i zapisz wynik błędu):**
+   ```bash
+   echo "Dopisuję coś" >> tylko_do_odczytu/regulamin.txt
+   touch tylko_do_odczytu/nowy.txt
+   ```
+   (Oczekiwane: błąd „Permission denied”)
+
+   **Przywrócenie (żeby móc iść dalej, na końcu zadania):**
+   ```bash
+   chmod 755 tylko_do_odczytu
+   chmod 644 tylko_do_odczytu/regulamin.txt
+   ```
+
+8. Ustaw uprawnienia dla skryptu w `skrypty` – plik ma być wykonywalny.
+
+   **Ustaw:**
+   ```bash
+   chmod 700 skrypty
+   chmod 700 skrypty/backup.sh
+   ```
+
+   **Sprawdź i uruchom:**
+   ```bash
+   ls -la skrypty/backup.sh
+   ./skrypty/backup.sh
+   ```
+
+   **Test kontrolny (celowo zepsuj i sprawdź, że nie działa):**
+   ```bash
+   chmod 600 skrypty/backup.sh
+   ./skrypty/backup.sh
+   ```
+   (Oczekiwane: błąd „Permission denied”)
+
+   **Napraw:**
+   ```bash
+   chmod 700 skrypty/backup.sh
+   ```
+
+9. Ustaw uprawnienia dla logów – tylko właściciel ma dostęp do pliku logu.
+
+   **Ustaw:**
+   ```bash
+   chmod 700 logi
+   chmod 600 logi/app.log
+   ```
+
+   **Sprawdź:**
+   ```bash
+   ls -la logi
+   stat -f "%Sp %N" logi/app.log
+   ```
+
+10. Weryfikacja końcowa (zapisz do raportu):
+    ```bash
+    ls -la
+    ls -la prywatne publiczne tylko_do_odczytu skrypty logi
+    ls -la prywatne/finanse prywatne/notatki publiczne/raporty
+    stat -f "%Sp %N" prywatne/finanse/budzet.txt prywatne/notatki/dziennik.txt
+    stat -f "%Sp %N" publiczne/raporty/raport1.txt tylko_do_odczytu/regulamin.txt logi/app.log skrypty/backup.sh
+    ```
+
+11. (macOS) Sprawdź, czy na którymś pliku/katalogu pojawia się `+` (ACL) lub `@` (atrybuty rozszerzone). Jeśli zobaczysz `+`, pokaż ACL:
+    ```bash
+    ls -la
+    ls -le publiczne/raporty
+    ls -le prywatne
+    ```
+    Jeśli nigdzie nie ma `+`, dopisz w raporcie: „Brak ACL w utworzonych plikach/katalogach (brak znaku + w ls -la)”.
+
+12. Utwórz raport tekstowy z wnioskami:
+    ```bash
+    nano RAPORT_B2_6_UPRAWNIENIA.txt
+    ```
+    W raporcie zapisz:
+    - Wynik `ls -la` dla: katalogu `projekt_mac` oraz podkatalogów (`prywatne`, `publiczne`, `tylko_do_odczytu`, `skrypty`, `logi`)
+    - Wynik `stat -f "%Sp %N" ...` dla co najmniej 5 plików
+    - Krótką interpretację (1–2 zdania) dla każdej „strefy”:
+      - `prywatne` – kto ma dostęp i dlaczego
+      - `publiczne` – kto ma dostęp i dlaczego
+      - `tylko_do_odczytu` – dlaczego nie da się dopisywać/tworzyć plików
+      - `skrypty` – co daje bit `x` dla pliku
+      - `logi` – dlaczego logi powinny być chronione
+
+**Dowód wykonania:**
+- Zrzuty ekranu lub log w pliku pokazujący: `ls -la` + `stat -f "%Sp %N"` (przed i po ustawieniach) oraz test błędu dla katalogu `tylko_do_odczytu`.
+- Plik `RAPORT_B2_6_UPRAWNIENIA.txt` w katalogu `~/Desktop/projekt_mac`.
 
 
 

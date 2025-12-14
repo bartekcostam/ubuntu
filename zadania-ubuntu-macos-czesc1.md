@@ -2907,23 +2907,4 @@ Sprawdz wyniki
 
 ---
 
-## PODSUMOWANIE
 
-Zestawu zawiera **53 praktyczne zadania** (40 dla Ubuntu + 13 dla macOS) podzielone na 12 działów. Każde zadanie zawiera:
-
-- **Tytuł i cel** – co uczeń ma się nauczyć
-- **Poziom trudności** – od podstawowego do trudniejszego
-- **Szczegółową treść** – krok po kroku, ale wymagającą samodzielnego myślenia
-- **Dowód wykonania** – co powinno być wynikiem
-
-Zadania można realizować sekwencyjnie lub wybierać selektywnie. Materiały są dostosowane do umiejętności 2–3 klasy technikum informatycznego.
-
----
-
-**Dokument ten stanowi CZĘŚĆ 1: Główny Zestaw Zadań**
-
-**Dalsze części zawierają:**
-- CZĘŚĆ 2: Dodatki dla nauczyciela (wskazówki, rozwiązania, typ owe błędy)
-- CZĘŚĆ 3: Setup środowiska (instrukcja konfiguracji VirtualBox i Ubuntu Server)
-
-Czekaj na następne pliki Markdown...
